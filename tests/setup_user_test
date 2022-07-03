@@ -113,7 +113,7 @@ setup_user_interactive_suggest_ssh_body() {
 		-o match:"Setup a user" \
 		-o match:"Full name for user" \
 		-o match:"Enter ssh key.*none" \
-		-o match:"Enter ssh key.*gitlab.sentinelos.io.org.*testuser.keys" \
+		-o match:"Enter ssh key.*gitlab.com.*testuser.keys" \
 		-o match:"adduser.* -g FullName .*testuser" \
 		-e empty \
 		setup-user <answers
@@ -156,7 +156,7 @@ setup_user_keys_opt_body() {
 	export WGETCONTENT='ssh-id from sentinelos'
 	atf_check -s exit:0 \
 		-o match:"adduser.* -D .*testuser" \
-		setup-user -k https://gitlab.sentinelos.io.org/user.keys testuser
+		setup-user -k https://gitlab.com/user.keys testuser
 	grep "$WGETCONTENT" home/testuser/.ssh/authorized_keys \
 		|| atf_fail "ssh key not fetched from sentinelos.io"
 }

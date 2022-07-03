@@ -88,10 +88,6 @@ if [ "$sshdchoice" = "openssh" ] && [ -z "$authorized_key" ] && [ -z "$users" ];
 				root_login_help
 				continue
 				;;
-			"al "*)
-				suggest="https://gitlab.sentinelos.io.org/${resp#* }.keys"
-				continue
-				;;
 			"gl "*)
 				suggest="https://gitlab.com/${resp#* }.keys"
 				continue
@@ -117,10 +113,6 @@ if [ "$sshdchoice" = "openssh" ] && [ -z "$authorized_key" ] && [ -z "$users" ];
 	while [ -n "$interactive" ] && [ "$(get_sshd_config PermitRootLogin)" != "no" ]; do
 		ask "Enter ssh key or URL for root (or 'none')" "$suggest"
 		case "$resp" in
-			"al "*)
-				suggest="https://gitlab.sentinelos.io.org/${resp#* }.keys"
-				continue
-				;;
 			"gl "*)
 				suggest="https://gitlab.com/${resp#* }.keys"
 				continue

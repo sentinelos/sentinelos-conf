@@ -15,7 +15,7 @@ usage() {
 		 -h  Show this help
 		 -f  Set full name for user
 		 -g  Comma or space separated list of groups to add user to
-		 -k  ssh key or URL to ssh key (eg. https://gitlab.sentinelos.io.org/user.keys)
+		 -k  ssh key or URL to ssh key (eg. https://gitlab.com/user.keys)
 		     or 'none' for no key
 		 -u  Unlock the user automatically (eg. creating the user non-interactively
 		     with an ssh key for login)

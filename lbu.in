@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # lbu - utility to create local backups.
-# Copyright (c) 2006-2010 Sentinel OS <os@sentinelos.io>
-# May be distributed under GPL2 or MIT
 
 VERSION=@VERSION@
 

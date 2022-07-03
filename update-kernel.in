@@ -4,9 +4,6 @@
 #
 # Kernel and firmware update script for Sentinel OS installations set up
 # with setup-bootable
-#
-# Copyright (c) 2014 Timo Teräs
-# Copyright (c) 2014-2021 Kaarle Ritvanen
 
 PREFIX=@PREFIX@
 : ${LIBDIR=$PREFIX/lib}
