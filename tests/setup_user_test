@@ -105,7 +105,7 @@ setup_user_interactive_suggest_ssh_body() {
 	init_env
 	(	echo "testuser"
 		echo "FullName"
-		echo "al"
+		echo "gh"
 		echo ""
 	)>answers
 	export WGETCONTENT='ssh-id from sentinelos'
@@ -113,7 +113,7 @@ setup_user_interactive_suggest_ssh_body() {
 		-o match:"Setup a user" \
 		-o match:"Full name for user" \
 		-o match:"Enter ssh key.*none" \
-		-o match:"Enter ssh key.*gitlab.com.*testuser.keys" \
+		-o match:"Enter ssh key.*github.com/testuser.keys" \
 		-o match:"adduser.* -g FullName .*testuser" \
 		-e empty \
 		setup-user <answers

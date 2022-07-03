@@ -89,10 +89,6 @@ if [ -n "$interactive" ] && [ -z "$keysopt" ]; then
 	while true; do
 		ask "Enter ssh key or URL for $username (or 'none')" $suggest
 		case "$resp" in
-			al)
-				suggest="https://gitlab.sentinelos.io.org/$username.keys"
-				continue
-				;;
 			gl)
 				suggest="https://gitlab.com/$username.keys"
 				continue

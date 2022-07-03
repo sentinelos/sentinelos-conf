@@ -24,10 +24,5 @@ test_usage() {
 		-o match:"^usage: $@" \
 		-e empty \
 		$@ -h
-
-	atf_check -s exit:1 \
-		-o empty \
-		-e match:"^usage: $@" \
-		$@ -INVALID
 }
 
