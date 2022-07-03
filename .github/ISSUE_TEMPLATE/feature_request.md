@@ -1,6 +1,6 @@
 ---
 name: Feature Request
-about: If you have something you think Sentinel OS pkg could improve or add support for.
+about: If you have something you think Sentinel OS conf could improve or add support for.
 
 ---
 
