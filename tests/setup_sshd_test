@@ -1,0 +1,140 @@
+#!/usr/bin/env atf-sh
+
+. $(atf_get_srcdir)/test_env.sh
+init_tests \
+	setup_sshd_usage \
+	setup_sshd_empty \
+	setup_sshd_dropbear \
+	setup_sshd_openssh \
+	setup_sshd_openssh_c_compat \
+	setup_sshd_interactive_openssh_nologin \
+	setup_sshd_interactive_openssh_prohibitpass \
+	setup_sshd_interactive_openssh_nokey \
+	setup_sshd_interactive_openssh_user_exist
+
+setup_sshd_usage_body() {
+	test_usage setup-sshd
+}
+
+setup_sshd_empty_body() {
+	init_env
+	atf_check -s exit:0 \
+		-e empty \
+		-o empty \
+		setup-sshd none
+}
+
+setup_sshd_dropbear_body() {
+	init_env
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"^apk add .* dropbear" \
+		-o match:"service dropbear added" \
+		-o match:"Starting dropbear" \
+		setup-sshd dropbear
+}
+
+setup_sshd_openssh_body() {
+	init_env
+	export WGETCONTENT="ssh-id FOOBAR"
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"^apk add .* openssh" \
+		-o match:"service sshd added" \
+		-o match:"Starting sshd" \
+		setup-sshd -k 'https://example.com/user.keys' openssh
+	grep 'ssh-id FOOBAR' root/.ssh/authorized_keys || atf_fail "failed to wget ssh key"
+}
+
+setup_sshd_openssh_c_compat_body() {
+	init_env
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"^apk add .* openssh" \
+		-o match:"service sshd added" \
+		-o match:"Starting sshd" \
+		-o not-match:"Allow root ssh" \
+		setup-sshd -c openssh
+}
+
+setup_sshd_interactive_openssh_nologin_body() {
+	init_env
+	mkdir -p etc/ssh
+	echo "PermitRootLogin foobar" > etc/ssh/sshd_config
+	(
+		echo "openssh"
+		echo "no"
+	) >answers
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"Which ssh server" \
+		-o match:"Allow root ssh login" \
+		-o not-match:"Enter ssh key" \
+		-o match:"apk add.* openssh" \
+		setup-sshd < answers
+	grep '^PermitRootLogin no$' etc/ssh/sshd_config || atf_fail "did not set PermitRootLogin"
+}
+
+setup_sshd_interactive_openssh_prohibitpass_body() {
+	init_env
+	mkdir -p etc/ssh
+	echo "PermitRootLogin foobar" > etc/ssh/sshd_config
+	(
+		echo "openssh"
+		echo ""
+		echo "gh user"
+		echo ""
+	) >answers
+	export WGETCONTENT="key from github"
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"Which ssh server" \
+		-o match:"apk add.* openssh" \
+		-o match:"Allow root ssh login.*\[prohibit-password\]" \
+		-o match:"Enter ssh key" \
+		-o match:"Enter ssh key.*github.com.*user.keys" \
+		setup-sshd <answers
+	grep '^PermitRootLogin prohibit-password$' etc/ssh/sshd_config \
+		|| atf_fail "did not set PermitRootLogin"
+	grep "$WGETCONTENT" root/.ssh/authorized_keys \
+		|| atf_fail "failed to fetch key from github"
+}
+
+setup_sshd_interactive_openssh_nokey_body() {
+	init_env
+	mkdir -p etc/ssh
+	echo "PermitRootLogin foobar" > etc/ssh/sshd_config
+	(
+		echo "openssh"
+		echo "yes"
+		echo "none"
+	) >answers
+	export WGETCONTENT="key from github"
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"Which ssh server" \
+		-o match:"apk add.* openssh" \
+		-o match:"Allow root ssh login.*\[prohibit-password\]" \
+		-o match:"Enter ssh key" \
+		setup-sshd <answers
+	grep '^PermitRootLogin yes$' etc/ssh/sshd_config \
+		|| atf_fail "did not set PermitRootLogin"
+}
+
+setup_sshd_interactive_openssh_user_exist_body() {
+	init_env
+	mkdir -p etc/ssh
+	# should not ask permit root login or ssh key if user exists
+	echo "joe:x:1000:1000:joe,,,:/home/joe:/bin/ash" >etc/passwd
+	(
+		echo "openssh"
+	) >answers
+	atf_check -s exit:0 \
+		-e empty \
+		-o match:"Which ssh server" \
+		-o not-match:"Allow root ssh login" \
+		-o not-match:"Enter ssh key" \
+		-o match:"apk add.* openssh" \
+		setup-sshd < answers
+}
+

@@ -1,0 +1,49 @@
+#!/usr/bin/env atf-sh
+
+. $(atf_get_srcdir)/test_env.sh
+init_tests \
+	setup_sentinelos_usage \
+	setup_sentinelos_quick \
+	setup_sentinelos_create_answerfile
+
+setup_sentinelos_usage_body() {
+	test_usage setup-sentinelos
+}
+
+setup_sentinelos_quick_body() {
+	init_env
+	mkdir -p sys/class/net/lo sys/class/net/eth0
+	echo 1 >sys/class/net/lo/ifindex
+	echo 2 >sys/class/net/eth0/ifindex
+	echo down >sys/class/net/lo/operstate
+	echo down >sys/class/net/eth0/operstate
+	atf_check -s exit:0 \
+		-o match:"openrc boot" \
+		-o match:"openrc default" \
+		-e empty \
+		setup-sentinelos -q
+}
+
+setup_sentinelos_create_answerfile_body() {
+	init_env
+	atf_check -s exit:0 \
+		-o match:"Answer file answers has been created"  \
+		setup-sentinelos -c answers
+
+	mkdir -p usr/share/zoneinfo/
+	touch usr/share/zoneinfo/UTC
+
+	sed -i -e 's/^USERSSHKEY=.*/USERSSHKEY="ssh-rsa blahbla user@example.com"/' \
+		answers
+
+	atf_check -s exit:0 \
+		-o match:"Starting hostname" \
+		-o match:"Starting mdev" \
+		-o match:"Added mirror" \
+		-o match:"adduser" \
+		-o match:"apk add" \
+		setup-sentinelos -f answers
+	grep "ssh-rsa blahbla user@example.com" home/juser/.ssh/authorized_keys \
+		|| atf_fail "ssh key not set for juser"
+}
+

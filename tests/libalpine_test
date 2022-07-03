@@ -1,0 +1,55 @@
+#!/usr/bin/env atf-sh
+
+. $(atf_get_srcdir)/test_env.sh
+init_tests \
+	libsentinelos_isin \
+	libsentinelos_available_ifaces \
+	libsentinelos_available_ifaces_bond \
+	libsentinelos_available_ifaces_bridge
+
+libsentinelos=$(atf_get_srcdir)/../libsentinelos.sh
+
+libsentinelos_isin_body() {
+	. "$libsentinelos"
+	isin a a b c || atf_fail "isin a a b c"
+	! isin foo bar baz a a b c || atf_fail" isin foo bar baz a a b c"
+	isin "with space" foo "with space" "other space" || atf_fail 'isin "with space" foo "with space" "other space'
+}
+
+libsentinelos_available_ifaces_body() {
+	init_env
+	mkdir -p sys/class/net/lo sys/class/net/eth0
+	echo 1 >sys/class/net/lo/ifindex
+	echo 2 >sys/class/net/eth0/ifindex
+	atf_check \
+		-o match:"lo eth0" \
+		sh -c ". $libsentinelos; available_ifaces"
+}
+
+libsentinelos_available_ifaces_bond_body() {
+	init_env
+	mkdir -p sys/class/net/lo \
+		sys/class/net/eth0/master/bonding \
+		sys/class/net/bond0
+	echo 1 >sys/class/net/lo/ifindex
+	echo 2 >sys/class/net/eth0/ifindex
+	echo 3 >sys/class/net/bond0/ifindex
+
+	atf_check \
+		-o match:"lo bond0" \
+		sh -c ". $libsentinelos; available_ifaces"
+}
+
+libsentinelos_available_ifaces_bridge_body() {
+	init_env
+	mkdir -p sys/class/net/lo \
+		sys/class/net/eth0/brport \
+		sys/class/net/br0
+	echo 1 >sys/class/net/lo/ifindex
+	echo 2 >sys/class/net/eth0/ifindex
+	echo 3 >sys/class/net/br0/ifindex
+
+	atf_check \
+		-o match:"lo br0" \
+		sh -c ". $libsentinelos; available_ifaces"
+}
