@@ -1,6 +1,6 @@
 # Sentinel OS configuration
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/sentinelos/conf)](https://github.com/sentinelos/conf/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/sentinelos/sentinel-conf)](https://github.com/sentinelos/sentinel-conf/releases)
 
 This repo contains a set of utilities for making backup of config files and for setting up a new Sentinel OS computer.
 
@@ -16,7 +16,7 @@ This repo contains a set of utilities for making backup of config files and for 
 
 The main script is called `setup-sentinelos`, and it will perform basic system setup. Each script can be called independently, for example:
 
-  * `setup-acf` sets up ACF web interface
+  * `setup-hostname` sets up host name
   * `setup-ntp` sets up NTP service
   * etc.
 

@@ -7,12 +7,10 @@ PREFIX		?=
 LIB_FILES	:= libsentinelos.sh dasd-functions.sh
 SBIN_FILES	:= copy-modloop\
 		lbu\
-		setup-acf\
 		setup-sentinelos\
 		setup-apkcache\
 		setup-apkrepos\
 		setup-bootable\
-		setup-desktop\
 		setup-devd\
 		setup-disk\
 		setup-dns\
@@ -27,7 +25,6 @@ SBIN_FILES	:= copy-modloop\
 		setup-timezone\
 		setup-user\
 		setup-xen-dom0\
-		setup-xorg-base\
 		update-conf\
 		update-kernel
 
@@ -47,7 +44,7 @@ endif
 
 
 DESC="Sentinel OS configuration scripts"
-WWW="https://github.com/sentinelos/conf"
+WWW="https://github.com/sentinelos/sentinelos-conf"
 
 
 SED		:= sed
@@ -100,7 +97,7 @@ clean:
 
 sentinelos-conf.iso: $(SCRIPTS) $(BIN_FILES)
 	$(MAKE) install PREFIX=/ DESTDIR=tmp/
-	xorriso -as mkisofs -r -V 'ALPINECONF' -J -o $@ tmp/ && rm -rf tmp
+	xorriso -as mkisofs -r -V 'SENTINELOSCONF' -J -o $@ tmp/ && rm -rf tmp
 
 iso: sentinelos-conf.iso
 

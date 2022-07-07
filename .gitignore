@@ -3,7 +3,6 @@
 Kyuafile
 copy-modloop
 lbu
-setup-acf
 setup-ads
 setup-sentinelos
 setup-sentinelos-web
@@ -11,11 +10,9 @@ setup-apkcache
 setup-apkrepos
 setup-bootable
 setup-cryptswap
-setup-desktop
 setup-devd
 setup-disk
 setup-dns
-setup-gparted-desktop
 setup-hostname
 setup-interfaces
 setup-keymap
@@ -27,7 +24,6 @@ setup-sshd
 setup-timezone
 setup-user
 setup-xen-dom0
-setup-xorg-base
 uniso
 update-conf
 update-kernel
